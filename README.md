@@ -58,7 +58,7 @@ Se debe entregar el código fuente de la API, el script de creación de la base 
 
 # 🛠️ Tecnologías Utilizadas
 
-- **[laravel](https://laravel.com/docs/12.x)**: Framework de Laravel en su ultima versión.
+- **[laravel](https://laravel.com/docs/8.x)**: Framework de Laravel en su ultima versión.
 - **[PostgreSQL](https://www.postgresql.org/)**: Sistema de gestión de bases de datos relacional.
 - **[Nginx](https://www.nginx.com/)**: Servidor web y proxy inverso.
 - **Docker**: Para la contenerización y fácil despliegue.
@@ -95,12 +95,31 @@ El código fuente está disponible en [Github]().
     - Host DB : POSTGRES_DB_HOST=""
 
 
-# 🚀 Instalación
+# 🚀 Instalación en docker
 
 1. Correr contenedores:
 
 ```bash
     docker-compose up -d --build
+```
+
+2. Ingresar al contenedor:
+```bash
+    docker exec -it container_citas_medicas_app bash
+```
+
+3. Instalar dependencias de laravel:
+```bash
+    composer install 
+```
+
+4. Limpiar laravel y ejecutar migraciones:
+```bash
+    php artisan config:clear &&
+    php artisan route:clear &&
+    php artisan view:clear &&
+    php artisan migrate &&
+    php artisan db:seed
 ```
 
 # Desinstalación

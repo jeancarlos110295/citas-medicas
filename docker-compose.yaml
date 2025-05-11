@@ -21,10 +21,7 @@ services:
       - db
     networks:
       - citasmedicas_network
-    mem_limit: 500m
-    mem_reservation: 250m
-    cpus: "0.5"
-    
+
   webserver:
     image: nginx:latest
     container_name: nginx
@@ -52,9 +49,6 @@ services:
       - "${POSTGRES_PORT}:5432"
     networks:
       - citasmedicas_network
-    mem_limit: 500m
-    mem_reservation: 250m
-    cpus: "0.5"
 
 networks:
   citasmedicas_network:
