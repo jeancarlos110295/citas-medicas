@@ -2,8 +2,13 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Http\Request;
+use MarcinOrlowski\ResponseBuilder\ResponseBuilder;
+use Spatie\Permission\Exceptions\UnauthorizedException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -37,5 +42,29 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
+        //Se pueden capturar mas excepciones especificas para controlar la salida de errores
+        $this->renderable(function (ModelNotFoundException $e, Request $request) {
+            return ResponseBuilder::asError(404)
+                ->withHttpCode(404)
+                ->withMessage('No existe el recurso solicitado.')
+                ->build();
+        });
+
+        $this->renderable(function (NotFoundHttpException $e, Request $request) {
+            return ResponseBuilder::asError(404)
+                ->withHttpCode(404)
+                ->withMessage('No existe el recurso solicitado.')
+                ->build();
+        });
+
+        $this->renderable(function (UnauthorizedException $e, Request $request) {
+            return ResponseBuilder::asError(403)
+                ->withHttpCode(403)
+                ->withMessage('No tienes permiso para acceder a este recurso.')
+                ->build();
+        });
+
+        
     }
 }

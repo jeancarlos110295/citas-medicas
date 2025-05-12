@@ -21,7 +21,7 @@ class AuthRequest extends FormRequest
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'correo' => 'required|string|email|max:255',
@@ -29,7 +29,7 @@ class AuthRequest extends FormRequest
         ];
     }
 
-    public function messages()
+    public function messages(): array
     {
         return [
             'correo.required' => 'El correo es obligatorio.',

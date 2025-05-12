@@ -50,6 +50,19 @@ services:
     networks:
       - citasmedicas_network
 
+  ngrok:
+    image: ngrok/ngrok:latest
+    container_name: ngrok
+    command: http webserver:80
+    environment:
+      - NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
+    depends_on:
+      - webserver
+    ports:
+      - "${NGROK_PORT}:4040" # panel web
+    networks:
+      - citasmedicas_network
+
 networks:
   citasmedicas_network:
     driver: bridge

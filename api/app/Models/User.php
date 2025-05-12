@@ -43,8 +43,47 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    /**
+     * Nombre del rol paciente
+     * @var string
+     */
+    const NAME_ROL_PACIENTE = 'paciente';
+
+    /**
+     * Nombre del rol medico
+     * @var string
+     */
+    const NAME_ROL_MEDICO = 'medico';
+
+
+    protected function getDefaultGuardName(): string { 
+        return 'sanctum'; 
+    }
+
+    public function guardName(): array { 
+        return ['sanctum']; 
+    }
+    
     protected function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
+    }
+
+    /**
+     * Relación uno a muchos:
+     * Obtiene todas las citas en las que el usuario actúa como paciente.
+     */
+    public function citasPacientes()
+    {
+        return $this->hasMany(Cita::class, 'paciente_id');
+    }
+
+    /**
+     * Relación uno a muchos:
+     * Obtiene todas las citas en las que el usuario actúa como médico.
+     */
+    public function citasMedico()
+    {
+        return $this->hasMany(Cita::class, 'medico_id');
     }
 }

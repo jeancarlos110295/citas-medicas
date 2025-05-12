@@ -65,7 +65,7 @@ Se debe entregar el código fuente de la API, el script de creación de la base 
 
 # 📂 Repositorio
 
-El código fuente está disponible en [Github]().
+El código fuente está disponible en [Github](https://github.com/jeancarlos110295/citas-medicas).
 
 # 📋 Requisitos
 
@@ -78,21 +78,21 @@ El código fuente está disponible en [Github]().
 
 1. Crear archivo `.env`: `cp .env.example .env`
 2. Configurar las siguientes variables:
-    - Nombre Base de datos: POSTGRES_DB=""
-    - Usuario Base de datos: POSTGRES_USER=""
-    - Clave Base de datos: POSTGRES_PASSWORD=""
-    - Puerto Base de datos: POSTGRES_PORT=""
+    - Nombre Base de datos: POSTGRES_DB
+    - Usuario Base de datos: POSTGRES_USER
+    - Clave Base de datos: POSTGRES_PASSWORD
+    - Puerto Base de datos: POSTGRES_PORT
 
 
 ## Laravel
 
 1. Navegar al directorio del proyecto: `cd api`.
 2. Crear archivo `.env`: `cp .env.example .env`
-    - Nombre BD : POSTGRES_DB=""
-    - Usuario BD : POSTGRES_USER=""
-    - Clave BD : POSTGRES_PASSWORD=""
-    - Puerto DB : POSTGRES_DB_PORT=""
-    - Host DB : POSTGRES_DB_HOST=""
+    - Nombre BD : DB_DATABASE
+    - Usuario BD : DB_USERNAME
+    - Clave BD : DB_PASSWORD
+    - Puerto DB : DB_PORT
+    - Host DB : DB_HOST
 
 
 # 🚀 Instalación en docker
@@ -129,3 +129,106 @@ El código fuente está disponible en [Github]().
 ```bash
     docker-compose down --volumes --remove-orphans && docker image rmi citas_medicas_app:latest
 ```
+
+# Configuraciones antes de usar la API
+
+## Configurar NGROK
+
+En el archivo .env, se debe configurar lo siguiente:
+
+- NGROK_AUTHTOKEN=""
+
+En donde el token se obtiene desde, [Authtoken](https://dashboard.ngrok.com/get-started/your-authtoken).
+
+Despues se debe acceder a la siguiente url: http://localhost:4040
+
+En donde se debe obtener la URL creada, por ejemplo: https://510e-190-22-194-46.ngrok-free.app
+
+Configurar la URL en:
+
+1. ´api/.env´ : "APP_URL".
+
+2. ´postman/Citas Medias Prueba Tecnica.postman_environment.json´ : Buscar ("key": "URL"), y reemplazar "value".
+
+
+## Configurar Flow
+
+En el archivo ´api/.env´, configurar lo siguiente:
+
+- FLOW_API_KEY=""
+
+- FLOW_SECRET_KEY=""
+
+Esta información, se obtiene desde:
+
+1. [Mis datos](https://sandbox.flow.cl/app/web/misDatos.php)
+2. Integración
+3. Copiar "Api Key" y pegar en "FLOW_API_KEY"
+4. Copiar "Secret Key" y pegar en "FLOW_SECRET_KEY"
+
+### Metodos de pago de prueba
+
+Se puede seleccionar cualquier medio de pago, utilizando las credenciales que proporciona flow.
+
+[Realizar pruebas en nuestro ambiente Sandbox](https://sandbox.flow.cl/docs/api.html#section/Introduccion/Realizar-pruebas-en-nuestro-ambiente-Sandbox)
+
+
+# Como consumir la API
+
+Se debe utilizar Postman. En donde se debe importar los exports ubicados en ´postman´.
+
+## Usuarios
+
+1. Registrar un usuario, consumiendo el request "store"
+
+    En donde se debe registrar los medicos y despues los pacientes.
+
+## Auth
+
+1. Login de usuarios
+
+    - Crear 1 cita utlizando x paciente
+    - Copiar el valor de "token", ejemplo: Bearer 1|1gcbYn1DsMWJwxBgbQNnEhx4OjGiVlhzpUwZWRxC
+    - Actualizar la variable de postman "TOKEN", con el token copiado
+
+## Citas
+
+1. Crear cita, consumiendo el request "store"
+
+    - Obtener el id del usuario medico
+    - Reemplazar "user_id_medico", con el id del usuario medico
+    - Copiar el id de la cita
+
+## Pagos
+
+1. Aca es importante haber configurado bien ngrok, ya que flow se conectara por la url expuexta a internet.
+
+    - Modificar la url: {{URL}}/pagos/{ID_CITA}/pago
+    - Reemplazar {ID_CITA}, con el id de la cita copiado
+    - Crear el pago consumiendo el request 'store'
+    - Ingresar a la url: data.url_pago, ejemplo (https://sandbox.flow.cl/app/web/pay.php?token=045FCA99D0958063A1F40096D72571946803D60R)
+    - Seleccionar el primer metodo de pago
+    - Continuar con el flujo de pago utilizando los datos en la imagen
+    ![Texto alternativo](tarjetas-de-prueba-chile.png)
+    - Si todo sale ok, debera ver una respuesta json
+
+## Medico/Citas
+
+>Iniciar sesión como medico
+
+1.  Listar mis citas del día como medico
+
+    - Consumir la request "index"
+
+2. Ver una cita
+
+    - Consumir la request "show"
+    - Modificar la url: {{URL}}/medicocitas/{ID_CITA}
+    - Reemplazar {ID_CITA}, con el id de la cita copiado
+
+3. Confirmar pago
+
+    - Consumir la request "confirmar_pago"
+    - Modificar la url: {{URL}}/medicocitas/{ID_CITA}
+    - Reemplazar {ID_CITA}, con el id de la cita copiado
+    - El valor de "estado_id", debe ser 3
